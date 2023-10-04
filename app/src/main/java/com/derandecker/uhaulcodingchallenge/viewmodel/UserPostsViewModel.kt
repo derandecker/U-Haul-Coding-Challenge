@@ -26,15 +26,18 @@ class UserPostsViewModel() : ViewModel() {
     }
 
     fun getUserPosts(userId: Int) {
-        viewModelScope.launch {
-            try {
-                withContext(Dispatchers.IO + handler) {
-                    _userPosts.value = UserApi.retrofitService.getUserPosts(userId = userId)
-                    _uiState.value = UiState.Success
+        // prevent reloading from network during config change such as screen rotation
+        if(_userPosts.value.isEmpty()) {
+            viewModelScope.launch {
+                try {
+                    withContext(Dispatchers.IO + handler) {
+                        _userPosts.value = UserApi.retrofitService.getUserPosts(userId = userId)
+                        _uiState.value = UiState.Success
+                    }
+                } catch (e: java.lang.Exception) {
+                    Log.d("NetworkApi", e.toString())
+                    _uiState.value = UiState.Error
                 }
-            } catch (e: java.lang.Exception) {
-                Log.d("NetworkApi", e.toString())
-                _uiState.value = UiState.Error
             }
         }
     }
