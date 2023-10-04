@@ -51,6 +51,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.moshi.kotlin)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.convertermoshi)

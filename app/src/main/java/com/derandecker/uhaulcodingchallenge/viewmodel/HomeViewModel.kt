@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.derandecker.uhaulcodingchallenge.models.User
 import com.derandecker.uhaulcodingchallenge.network.UserApi
+import com.derandecker.uhaulcodingchallenge.ui.UiState
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,17 +13,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class AppViewModel() : ViewModel() {
-    private val _uiState = MutableStateFlow(UiState.Loading)
+class HomeViewModel() : ViewModel() {
 
-    // will add some sort of loading and error indicators to UI after initial "4 hour" commit
+    private val _uiState = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
 
     private val _userList = MutableStateFlow(emptyList<User>())
     val userList: StateFlow<List<User>> = _userList
 
     val handler = CoroutineExceptionHandler { _, exception ->
-        Log.d("CoroutineExceptionHandler ViewModelScope:", "$exception")
+        Log.d("CoroutineExceptionHandler HomeViewModel ViewModelScope:", "$exception")
     }
 
     init {
@@ -44,8 +44,4 @@ class AppViewModel() : ViewModel() {
             }
         }
     }
-}
-
-enum class UiState {
-    Loading, Success, Error
 }

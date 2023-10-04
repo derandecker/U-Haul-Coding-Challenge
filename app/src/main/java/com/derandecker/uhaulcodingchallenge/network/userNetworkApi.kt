@@ -1,5 +1,6 @@
 package com.derandecker.uhaulcodingchallenge.network
 
+import com.derandecker.uhaulcodingchallenge.models.Post
 import com.derandecker.uhaulcodingchallenge.models.User
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -22,6 +23,9 @@ private val retrofit = Retrofit.Builder()
 interface UserNetworkApi {
     @GET("users")
     suspend fun getUsers(): List<User>
+
+    @GET("posts?userId={userId}")
+    suspend fun getUserPosts(userId: Int): List<Post>
 }
 
 object UserApi {
