@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.derandecker.uhaulcodingchallenge"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.derandecker.uhaulcodingchallenge"
         minSdk = 29
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -51,7 +51,11 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.moshi.kotlin)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.convertermoshi)
+    implementation(libs.moshi)
+    implementation (libs.retrofit)
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
