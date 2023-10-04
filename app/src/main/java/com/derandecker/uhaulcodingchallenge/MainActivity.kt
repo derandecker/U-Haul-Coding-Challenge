@@ -20,8 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.derandecker.uhaulcodingchallenge.models.User
 import com.derandecker.uhaulcodingchallenge.ui.theme.UHaulCodingChallengeTheme
 import com.derandecker.uhaulcodingchallenge.viewmodel.AppViewModel
+import com.derandecker.uhaulcodingchallenge.viewmodel.UiState
 
 
 class MainActivity : ComponentActivity() {
@@ -34,7 +36,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen()
+                    AppScreen()
                 }
             }
         }
@@ -42,16 +44,31 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen(
+fun AppScreen(
     viewModel: AppViewModel = viewModel(),
 ) {
-    val userList = viewModel.userList.collectAsState()
+    val userList = viewModel.userList.collectAsState().value
+    val uiState = viewModel.uiState.collectAsState().value
+    MainScreen(userList = userList, uiState = uiState)
+}
+
+@Composable
+fun MainScreen(userList: List<User>, uiState: UiState) {
+    when (uiState) {
+        UiState.Loading -> Text("Loading...")
+        UiState.Success -> UsernameAndAddressList(userList = userList)
+        UiState.Error -> Text("Error loading Users")
+    }
+}
+
+@Composable
+fun UsernameAndAddressList(userList: List<User>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        items(userList.value) {
+        items(userList) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -73,11 +90,28 @@ fun MainScreen(
     }
 }
 
+val testUserList = listOf<User>()
 
-@Preview(showBackground = true)
+@Pixel5Preview
 @Composable
-fun GreetingPreview() {
+fun ErrorPreview() {
     UHaulCodingChallengeTheme {
-        MainScreen()
+        MainScreen(uiState = UiState.Error, userList = testUserList)
     }
 }
+
+@Pixel5Preview
+@Composable
+fun LoadingPreview() {
+    UHaulCodingChallengeTheme {
+        MainScreen(uiState = UiState.Loading, userList = testUserList)
+    }
+}
+
+@Preview(
+    name = "Pixel5WithSystemUi",
+    showBackground = true,
+    device = "id:pixel_5",
+    showSystemUi = true
+)
+annotation class Pixel5Preview
