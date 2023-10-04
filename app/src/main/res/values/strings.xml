@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">UHaul Coding Challenge</string>
+    <string name="users">Users</string>
+    <string name="user_posts">User Posts</string>
 </resources>

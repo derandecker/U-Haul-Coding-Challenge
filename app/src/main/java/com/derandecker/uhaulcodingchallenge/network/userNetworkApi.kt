@@ -7,6 +7,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 
 private const val BASE_URL = "https://jsonplaceholder.typicode.com"
@@ -24,8 +25,8 @@ interface UserNetworkApi {
     @GET("users")
     suspend fun getUsers(): List<User>
 
-    @GET("posts?userId={userId}")
-    suspend fun getUserPosts(userId: Int): List<Post>
+    @GET("posts")
+    suspend fun getUserPosts(@Query("userId") userId: Int): List<Post>
 }
 
 object UserApi {

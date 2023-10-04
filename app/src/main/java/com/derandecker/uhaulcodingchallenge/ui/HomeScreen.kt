@@ -1,5 +1,7 @@
 package com.derandecker.uhaulcodingchallenge.ui
 
+import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,32 +17,62 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.derandecker.uhaulcodingchallenge.R
 import com.derandecker.uhaulcodingchallenge.models.User
 import com.derandecker.uhaulcodingchallenge.ui.theme.UHaulCodingChallengeTheme
 import com.derandecker.uhaulcodingchallenge.viewmodel.HomeViewModel
-import com.derandecker.uhaulcodingchallenge.viewmodel.UiState
 
+
+enum class AppScreens(@StringRes val title: Int) {
+    Users(title = R.string.users),
+    Posts(title = R.string.user_posts),
+}
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = viewModel(),
+    navController: NavHostController = rememberNavController()
 ) {
     val userList = viewModel.userList.collectAsState().value
     val uiState = viewModel.uiState.collectAsState().value
-    MainScreen(userList = userList, uiState = uiState)
+
+    NavHost(
+        navController = navController,
+        startDestination = AppScreens.Users.name,
+    ) {
+        composable(route = AppScreens.Users.name) {
+            UsersScreen(
+                userList = userList,
+                uiState = uiState,
+                onClick = { navController.navigate("posts/$it") }
+            )
+        }
+        composable(
+            route = "posts/{userId}",
+            arguments = listOf(navArgument("userId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            backStackEntry.arguments?.getInt("userId")?.let { UserPostsScreen(it) }
+        }
+    }
 }
 
 @Composable
-fun MainScreen(userList: List<User>, uiState: UiState) {
+fun UsersScreen(userList: List<User>, uiState: UiState, onClick: (Int) -> Unit) {
     when (uiState) {
         UiState.Loading -> Text("Loading...")
-        UiState.Success -> UsernameAndAddressList(userList = userList)
+        UiState.Success -> UsernameAndAddressList(userList = userList, onClick = onClick)
         UiState.Error -> Text("Error loading Users")
     }
 }
 
 @Composable
-fun UsernameAndAddressList(userList: List<User>) {
+fun UsernameAndAddressList(userList: List<User>, onClick: (Int) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -53,7 +85,8 @@ fun UsernameAndAddressList(userList: List<User>) {
                     .padding(
                         horizontal = 8.dp,
                         vertical = 8.dp,
-                    ),
+                    )
+                    .clickable { onClick(it.id) },
                 contentAlignment = Alignment.CenterStart
             ) {
                 Column {
@@ -74,7 +107,7 @@ val testUserList = listOf<User>()
 @Composable
 fun ErrorPreview() {
     UHaulCodingChallengeTheme {
-        MainScreen(uiState = UiState.Error, userList = testUserList)
+        UsersScreen(uiState = UiState.Error, userList = testUserList) {}
     }
 }
 
@@ -82,7 +115,7 @@ fun ErrorPreview() {
 @Composable
 fun LoadingPreview() {
     UHaulCodingChallengeTheme {
-        MainScreen(uiState = UiState.Loading, userList = testUserList)
+        UsersScreen(uiState = UiState.Loading, userList = testUserList) {}
     }
 }
 
