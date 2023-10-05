@@ -3,6 +3,7 @@ package com.derandecker.uhaulcodingchallenge.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.derandecker.uhaulcodingchallenge.models.NewPost
 import com.derandecker.uhaulcodingchallenge.models.Post
 import com.derandecker.uhaulcodingchallenge.network.UserApi
 import com.derandecker.uhaulcodingchallenge.ui.UiState
@@ -27,7 +28,7 @@ class UserPostsViewModel() : ViewModel() {
 
     fun getUserPosts(userId: Int) {
         // prevent reloading from network during config change such as screen rotation
-        if(_userPosts.value.isEmpty()) {
+        if (_userPosts.value.isEmpty()) {
             viewModelScope.launch {
                 try {
                     withContext(Dispatchers.IO + handler) {
@@ -41,4 +42,17 @@ class UserPostsViewModel() : ViewModel() {
             }
         }
     }
+
+    // Unfinished due to time constraints
+    // Would likely include this in a new ViewModel for the "AddPostScreen" instead
+    fun addNewPost(newPost: NewPost): String {
+        return if (Post().id != 0) {
+            "Posted successfully"
+        } else "Post unsccuessful. Try again."
+        // Incomplete code above for illustration only.
+        // Server returns json String (converted to Post object by Moshi) with id number included.
+        // I would handle that here and return status message to UI
+        // indicating to user if the post was successful
+    }
 }
+

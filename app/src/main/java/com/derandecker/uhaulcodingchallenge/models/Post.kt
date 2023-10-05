@@ -6,3 +6,9 @@ data class Post(
     val body: String = "",
     val userId: Int = 0
 )
+
+data class NewPost (
+    val title: String = "",
+    val body: String = "",
+    val userId: Int = 0
+)

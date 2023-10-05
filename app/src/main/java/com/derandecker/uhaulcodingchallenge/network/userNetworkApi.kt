@@ -7,6 +7,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 
@@ -27,6 +28,9 @@ interface UserNetworkApi {
 
     @GET("posts")
     suspend fun getUserPosts(@Query("userId") userId: Int): List<Post>
+
+    @POST("posts")
+    suspend fun addNewPost(rawJson: String): Post
 }
 
 object UserApi {
